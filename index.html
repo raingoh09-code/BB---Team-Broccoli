@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital AI Buddy - Find Your Tribe</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <div class="nav-brand">
+        <img src="logo.png" alt="Digital AI Buddy Logo" class="logo">
+        <h1>Digital AI Buddy</h1>
+      </div>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="communities.html">Communities</a></li>
+        <li id="profileLink" style="display: none;"><a href="profile.html">My Profile</a></li>
+        <li id="authLinks">
+          <a href="login.html">Login</a>
+          <a href="register.html">Sign Up</a>
+        </li>
+        <li id="userLinks" style="display: none;">
+          <a href="create-event.html">Create Event</a>
+          <a href="#" id="logoutBtn">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="hero-new">
+    <div class="container">
+      <div class="hero-layout">
+        <!-- Motivational Section on Top (Full Width) -->
+        <div class="motivational-section">
+          <blockquote id="dailyQuote" class="daily-quote">
+            <p class="quote-text">"Slow progress is still progress."</p>
+          </blockquote>
+        </div>
+        
+        <!-- Compact Mood Tracker on Left -->
+        <div class="compact-mood-tracker">
+          <h3>Today's Mood</h3>
+          <div class="compact-mood-selector">
+            <button class="compact-mood-btn" data-mood="happy" title="Happy">😊</button>
+            <button class="compact-mood-btn" data-mood="calm" title="Calm">😌</button>
+            <button class="compact-mood-btn" data-mood="energetic" title="Energetic">⚡</button>
+            <button class="compact-mood-btn" data-mood="stressed" title="Stressed">😰</button>
+            <button class="compact-mood-btn" data-mood="sad" title="Sad">😢</button>
+            <button class="compact-mood-btn" data-mood="anxious" title="Anxious">😟</button>
+            <button class="compact-mood-btn" data-mood="tired" title="Tired">😴</button>
+            <button class="compact-mood-btn" data-mood="excited" title="Excited">🤩</button>
+          </div>
+          <div id="compactMoodStatus" class="compact-mood-status"></div>
+          <div class="weekly-mood-display">
+            <div class="weekly-mood-day" data-day="0">
+              <div class="day-display">S</div>
+            </div>
+            <div class="weekly-mood-day" data-day="1">
+              <div class="day-display">M</div>
+            </div>
+            <div class="weekly-mood-day" data-day="2">
+              <div class="day-display">T</div>
+            </div>
+            <div class="weekly-mood-day" data-day="3">
+              <div class="day-display">W</div>
+            </div>
+            <div class="weekly-mood-day" data-day="4">
+              <div class="day-display">T</div>
+            </div>
+            <div class="weekly-mood-day" data-day="5">
+              <div class="day-display">F</div>
+            </div>
+            <div class="weekly-mood-day" data-day="6">
+              <div class="day-display">S</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Action Buttons on Right -->
+        <div class="hero-actions">
+          <a href="events.html" class="btn btn-large btn-primary">Explore Events</a>
+          <a href="communities.html" class="btn btn-large btn-outline">Find Communities</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mood History Modal -->
+  <div id="moodHistoryModal" class="mood-modal" style="display: none;">
+    <div class="mood-modal-content">
+      <span class="mood-modal-close" onclick="closeMoodModal()">&times;</span>
+      <h2>Your Mood History</h2>
+      <div id="moodWeeklyChart" class="mood-weekly-chart">
+        <p class="no-data">No mood data yet. Start tracking your mood!</p>
+      </div>
+    </div>
+  </div>
+
+  <section class="features">
+    <div class="container">
+      <h2>Why Join Digital AI Buddy?</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <h3>Discover Events</h3>
+          <p>Find local events that match your interests and passions</p>
+        </div>
+        <div class="feature-card">
+          <h3>Join Communities</h3>
+          <p>Connect with like-minded people in your area</p>
+        </div>
+        <div class="feature-card">
+          <h3>Create Events</h3>
+          <p>Organize and host your own events and gatherings</p>
+        </div>
+        <div class="feature-card">
+          <h3>Build Networks</h3>
+          <p>Expand your social and professional circles</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="container">
+      <h2>Ready to get started?</h2>
+      <p>Join thousands of people connecting in their communities</p>
+      <a href="register.html" class="btn btn-large btn-primary">Create Your Free Account</a>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2026 Digital AI Buddy. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

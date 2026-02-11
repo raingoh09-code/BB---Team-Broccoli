@@ -1,0 +1,202 @@
+[
+  {
+    "id": "onepa-1770808348786",
+    "title": "[Woodlands Zone 2 RN] - Dance Fit Club (HealthierSG)",
+    "description": "Join us at Woodlands Zone 2 RN for this Active Ageing event!",
+    "date": "2026-02-14",
+    "time": "19:30",
+    "location": "Woodlands Zone 2 RN",
+    "category": "Health",
+    "maxAttendees": null,
+    "organizerId": "woodlandszone2rn",
+    "attendees": [],
+    "coordinates": {
+      "lat": 1.4382,
+      "lng": 103.7891
+    },
+    "imageUrl": "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=400",
+    "externalUrl": "https://www.onepa.gov.sg/events/woodlands-zone-2-rn-dance-fit-club-healthiersg-39858500",
+    "price": 24,
+    "createdAt": "2026-02-11T11:12:28.787Z"
+  },
+  {
+    "id": "onepa-1770808348787",
+    "title": "Tanglin CC WEC Eye Screening",
+    "description": "Join us at Tanglin CC for this Active Ageing event!",
+    "date": "2026-03-22",
+    "time": "09:00",
+    "location": "Tanglin CC",
+    "category": "Health",
+    "maxAttendees": null,
+    "organizerId": "tanglincc",
+    "attendees": [],
+    "coordinates": {
+      "lat": 1.3048,
+      "lng": 103.8131
+    },
+    "imageUrl": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400",
+    "externalUrl": "https://www.onepa.gov.sg/events/tanglin-cc-wec-eye-screening-97029544",
+    "price": 5,
+    "createdAt": "2026-02-11T11:12:28.787Z"
+  },
+  {
+    "id": "onepa-1770808348788",
+    "title": "[Yew Tee CC SCEC & Yew Tee AAC] Fitness Square Dance (January 2026 - June 2026)",
+    "description": "Join us at Yew Tee CC for this Active Ageing event!",
+    "date": "2026-02-20",
+    "time": "07:30",
+    "location": "Yew Tee CC",
+    "category": "Health",
+    "maxAttendees": null,
+    "organizerId": "yewteecc",
+    "attendees": [],
+    "coordinates": {
+      "lat": 1.3969,
+      "lng": 103.7474
+    },
+    "imageUrl": "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=400",
+    "externalUrl": "https://www.onepa.gov.sg/events/yew-tee-cc-scec-yew-tee-aac-fitness-square-dance-january-2026-june-2026-64635909",
+    "price": 12,
+    "createdAt": "2026-02-11T11:12:28.787Z"
+  },
+  {
+    "id": "onepa-1770808348789",
+    "title": "(Cheng San Palm RN) LEARN DIGITAL 2026 @ Cheng San Palm RN",
+    "description": "Join us at Cheng San CC for this Active Ageing event!",
+    "date": "2026-02-15",
+    "time": "09:30",
+    "location": "Cheng San CC",
+    "category": "Health",
+    "maxAttendees": null,
+    "organizerId": "chengsancc",
+    "attendees": [],
+    "coordinates": {
+      "lat": 1.3691,
+      "lng": 103.8454
+    },
+    "imageUrl": "https://images.unsplash.com/photo-1488751045188-3c55bbf9a3fa?w=400",
+    "externalUrl": "https://www.onepa.gov.sg/events/cheng-san-palm-rn-learn-digital-2026-cheng-san-palm-rn-93614799",
+    "price": 0,
+    "createdAt": "2026-02-11T11:12:28.787Z"
+  },
+  {
+    "id": "onepa-1770808348790",
+    "title": "Happy Singing Hour - 14 February 2026 ",
+    "description": "Join us at Radin Mas CC for this Active Ageing event!",
+    "date": "2026-02-14",
+    "time": "14:30",
+    "location": "Radin Mas CC",
+    "category": "Health",
+    "maxAttendees": null,
+    "organizerId": "radinmascc",
+    "attendees": [],
+    "coordinates": {
+      "lat": 1.2756,
+      "lng": 103.8197
+    },
+    "imageUrl": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400",
+    "externalUrl": "https://www.onepa.gov.sg/events/happy-singing-hour-14-february-2026-18949150",
+    "price": 2,
+    "createdAt": "2026-02-11T11:12:28.787Z"
+  },
+  {
+    "id": "onepa-1770808348791",
+    "title": "Admiralty Zone 5 RN - Dance-Fit Club (Jan - Dec 2026)",
+    "description": "Join us at Admiralty Zone 5 RN for this Active Ageing event!",
+    "date": "2026-03-01",
+    "time": "19:30",
+    "location": "Admiralty Zone 5 RN",
+    "category": "Health",
+    "maxAttendees": null,
+    "organizerId": "admiraltyzone5rn",
+    "attendees": [],
+    "coordinates": {
+      "lat": 1.4404,
+      "lng": 103.8009
+    },
+    "imageUrl": "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=400",
+    "externalUrl": "https://www.onepa.gov.sg/events/admiralty-zone-5-rn-dance-fit-club-jan-dec-2026-44567914",
+    "price": 24,
+    "createdAt": "2026-02-11T11:12:28.787Z"
+  },
+  {
+    "id": "onepa-1770808348792",
+    "title": "[MTB RN] Karaoke IG - 31 Dec 2025 to 11 Mar 2026",
+    "description": "Join us at Marine Terrace Breeze RN for this Active Ageing event!",
+    "date": "2026-03-04",
+    "time": "19:00",
+    "location": "Marine Terrace Breeze RN",
+    "category": "Health",
+    "maxAttendees": null,
+    "organizerId": "marineterracebreezern",
+    "attendees": [],
+    "coordinates": {
+      "lat": 1.3042,
+      "lng": 103.9142
+    },
+    "imageUrl": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400",
+    "externalUrl": "https://www.onepa.gov.sg/events/mtb-rn-karaoke-ig-31-dec-2025-to-11-mar-2026-53458008",
+    "price": 4.5,
+    "createdAt": "2026-02-11T11:12:28.787Z"
+  },
+  {
+    "id": "onepa-1770808348793",
+    "title": "Toa Payoh East CC SCEC IG Group Live Band Sharing Session (Every Sunday 6.30pm to 9.30pm) - January to March 2026",
+    "description": "Join us at Toa Payoh East CC for this Active Ageing event!",
+    "date": "2026-03-07",
+    "time": "18:30",
+    "location": "Toa Payoh East CC",
+    "category": "Health",
+    "maxAttendees": null,
+    "organizerId": "toapayoheastcc",
+    "attendees": [],
+    "coordinates": {
+      "lat": 1.3343,
+      "lng": 103.8467
+    },
+    "imageUrl": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400",
+    "externalUrl": "https://www.onepa.gov.sg/events/toa-payoh-east-cc-scec-ig-group-live-band-sharing-session-every-sunday-6-30pm-to-9-30pm-january-to-march-2026-80919110",
+    "price": 60,
+    "createdAt": "2026-02-11T11:12:28.787Z"
+  },
+  {
+    "id": "onepa-1770808348794",
+    "title": "Bishan Wellness Hub - 2026 Seniors Pool Club (Mondays)",
+    "description": "Join us at Bishan CC for this Active Ageing event!",
+    "date": "2026-03-10",
+    "time": "10:00",
+    "location": "Bishan CC",
+    "category": "Health",
+    "maxAttendees": null,
+    "organizerId": "bishancc",
+    "attendees": [],
+    "coordinates": {
+      "lat": 1.3526,
+      "lng": 103.8352
+    },
+    "imageUrl": "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400",
+    "externalUrl": "https://www.onepa.gov.sg/events/bishan-wellness-hub-2026-seniors-pool-club-mondays-23883406",
+    "price": 0,
+    "createdAt": "2026-02-11T11:12:28.787Z"
+  },
+  {
+    "id": "onepa-1770808348795",
+    "title": "Bishan Wellness Hub - 2026 Lawn Bowl Sessions",
+    "description": "Join us at Bishan CC for this Active Ageing event!",
+    "date": "2026-03-13",
+    "time": "10:00",
+    "location": "Bishan CC",
+    "category": "Health",
+    "maxAttendees": null,
+    "organizerId": "bishancc",
+    "attendees": [],
+    "coordinates": {
+      "lat": 1.3526,
+      "lng": 103.8352
+    },
+    "imageUrl": "https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?w=400",
+    "externalUrl": "https://www.onepa.gov.sg/events/bishan-wellness-hub-2026-lawn-bowl-sessions-81258348",
+    "price": 0,
+    "createdAt": "2026-02-11T11:12:28.787Z"
+  }
+]

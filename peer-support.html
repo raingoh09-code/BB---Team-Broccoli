@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Peer Matching - Digital AI Buddy</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <div class="nav-brand">
+        <img src="logo.png" alt="Digital AI Buddy Logo" class="logo">
+        <h1>Digital AI Buddy</h1>
+      </div>
+      <ul class="nav-menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="communities.html" class="active">Communities</a></li>
+        <li id="profileLink" style="display: none;"><a href="profile.html">My Profile</a></li>
+        <li id="authLinks">
+          <a href="login.html">Login</a>
+          <a href="register.html">Sign Up</a>
+        </li>
+        <li id="userLinks" style="display: none;">
+          <a href="create-community.html">Create Community</a>
+          <a href="#" id="logoutBtn">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="page-header">
+    <div class="container">
+      <h2>Peer Matching Program</h2>
+      <p>Connect with like-minded peers based on hobbies, interests, and age</p>
+    </div>
+  </section>
+
+  <section class="peer-matching-section">
+    <div class="container">
+      <div class="peer-matching-layout">
+        <!-- Sidebar with filters and matched peers -->
+        <aside class="peer-sidebar">
+          <div class="sidebar-card">
+            <h3>Find Your Peers</h3>
+            <div class="filter-group">
+              <label>Age Range</label>
+              <div class="age-range-inputs">
+                <input type="number" id="minAge" placeholder="Min" min="13" max="100" value="18">
+                <span>to</span>
+                <input type="number" id="maxAge" placeholder="Max" min="13" max="100" value="99">
+              </div>
+            </div>
+            
+            <div class="filter-group">
+              <label>Interests</label>
+              <div class="interest-tags">
+                <button class="tag-filter" data-interest="Reading">Reading</button>
+                <button class="tag-filter" data-interest="Sports">Sports</button>
+                <button class="tag-filter" data-interest="Music">Music</button>
+                <button class="tag-filter" data-interest="Art">Art</button>
+                <button class="tag-filter" data-interest="Technology">Technology</button>
+                <button class="tag-filter" data-interest="Cooking">Cooking</button>
+                <button class="tag-filter" data-interest="Travel">Travel</button>
+                <button class="tag-filter" data-interest="Gaming">Gaming</button>
+                <button class="tag-filter" data-interest="Fitness">Fitness</button>
+                <button class="tag-filter" data-interest="Photography">Photography</button>
+              </div>
+            </div>
+
+            <div class="filter-group">
+              <label>Distance (km)</label>
+              <input type="range" id="distanceRange" min="1" max="50" value="10" step="1">
+              <span id="distanceValue">10 km</span>
+            </div>
+
+            <button id="applyFiltersBtn" class="btn btn-primary">Apply Filters</button>
+          </div>
+
+          <div class="sidebar-card matched-peers-list">
+            <h3>Matched Peers (<span id="matchCount">0</span>)</h3>
+            <div id="peersListContainer">
+              <p class="no-data">Set your location to find peers near you</p>
+            </div>
+          </div>
+
+          <div class="sidebar-card study-groups-list">
+            <h3>Study Groups</h3>
+            <button id="createStudyGroupBtn" class="btn btn-secondary" style="width: 100%; margin-bottom: 15px;">
+              Create Study Group
+            </button>
+            <div id="studyGroupsContainer">
+              <p class="no-data">No study groups yet</p>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Map -->
+        <div class="peer-map-container">
+          <div style="background: #e3f2fd; padding: 10px; margin: 10px 0; border-radius: 4px; font-size: 13px; color: #1976d2;">
+            <strong>Tip:</strong> Click "Use Current Location" and allow browser access when prompted to find peers near you.
+          </div>
+          <div class="map-location-control">
+            <button id="locateMeBtn" class="btn btn-primary">Use Current Location</button>
+          </div>
+          <div id="peerMap"></div>
+          <div class="map-legend">
+            <div class="legend-item">
+              <span class="legend-icon you-marker"></span>
+              <span>You</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-icon peer-marker"></span>
+              <span>Matched Peer</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-icon group-marker"></span>
+              <span>Study Group</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Wave Modal -->
+  <div id="waveModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Wave Hi!</h2>
+      <div id="waveUserInfo"></div>
+      <textarea id="waveMessage" placeholder="Add a friendly message (optional)..." rows="3"></textarea>
+      <button id="sendWaveBtn" class="btn btn-primary">Send Wave</button>
+    </div>
+  </div>
+
+  <!-- Study Group Modal -->
+  <div id="studyGroupModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Create Study Group</h2>
+      <form id="studyGroupForm">
+        <div class="form-group">
+          <label>Group Name</label>
+          <input type="text" id="groupName" required placeholder="e.g., Evening Math Study Group">
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="groupDescription" required placeholder="What will the group study?" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Subject/Topic</label>
+          <input type="text" id="groupSubject" required placeholder="e.g., Mathematics, Programming, English">
+        </div>
+        <div class="form-group">
+          <label>Max Members</label>
+          <input type="number" id="maxMembers" min="2" max="20" value="5" required>
+        </div>
+        <div class="form-group">
+          <label>Meeting Schedule</label>
+          <input type="text" id="meetingSchedule" placeholder="e.g., Every Tuesday 7PM">
+        </div>
+        <button type="submit" class="btn btn-primary">Create Group</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Location Set Modal -->
+  <div id="locationModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Set Your Location</h2>
+      <p>Click on the map to set your location, or enter coordinates:</p>
+      <div class="form-group">
+        <label>Latitude</label>
+        <input type="number" id="inputLat" step="0.0001" placeholder="1.3521">
+      </div>
+      <div class="form-group">
+        <label>Longitude</label>
+        <input type="number" id="inputLng" step="0.0001" placeholder="103.8198">
+      </div>
+      <button id="saveLocationBtn" class="btn btn-primary">Save Location</button>
+      <p class="help-text">Tip: You can also use "Use Current Location" button for automatic detection</p>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2026 Digital AI Buddy. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Define callback before loading Google Maps
+    var initGoogleMapCallback = function() {
+      console.log('Google Maps callback triggered');
+      if (window.initMap) {
+        window.initMap();
+      }
+    };
+  </script>
+  <script src="js/auth.js"></script>
+  <script src="js/peer-matching.js"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCg6fF7dkeuXzWPCyY2IAP9sCndoZ4L9GU&callback=initGoogleMapCallback"></script>
+</body>
+</html>

@@ -1,0 +1,581 @@
+let allEvents = [];
+let map;
+let markers = [];
+let userLocation = null;
+let currentView = 'list';
+let infoWindow;
+
+// Initialize Google Map
+function initMap() {
+  const mapElement = document.getElementById('map');
+  
+  // Check if Google Maps loaded successfully
+  if (typeof google === 'undefined' || !google.maps) {
+    showMapSetupInstructions();
+    return;
+  }
+  
+  // Default to San Francisco if no user location
+  const defaultLocation = { lat: 37.7749, lng: -122.4194 };
+  
+  map = new google.maps.Map(mapElement, {
+    zoom: 12,
+    center: defaultLocation,
+    mapTypeControl: true,
+    streetViewControl: false,
+    fullscreenControl: true,
+    styles: [
+      {
+        featureType: 'poi',
+        elementType: 'labels',
+        stylers: [{ visibility: 'off' }]
+      }
+    ]
+  });
+
+  infoWindow = new google.maps.InfoWindow();
+
+  // Try to get user's location
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        userLocation = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        map.setCenter(userLocation);
+        
+        // Add marker for user location
+        new google.maps.Marker({
+          position: userLocation,
+          map: map,
+          title: 'Your Location',
+          icon: {
+            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
+              '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="8" fill="#4f46e5"/><circle cx="16" cy="16" r="12" fill="none" stroke="#4f46e5" stroke-width="2"/></svg>'
+            ),
+            scaledSize: new google.maps.Size(32, 32),
+            anchor: new google.maps.Point(16, 16)
+          }
+        });
+
+        // Load events after we have user location
+        if (allEvents.length > 0 && currentView === 'map') {
+          displayEventsOnMap(allEvents);
+        }
+      },
+      (error) => {
+        console.log('Geolocation error:', error);
+      }
+    );
+  }
+}
+
+// Make initMap globally accessible
+window.initMap = initMap;
+
+// Show setup instructions if Google Maps isn't loaded
+function showMapSetupInstructions() {
+  const mapElement = document.getElementById('map');
+  mapElement.innerHTML = `
+    <div style="padding: 3rem; text-align: center; background: white; border-radius: 1rem;">
+      <div style="font-size: 3rem; margin-bottom: 1rem;">🗺️</div>
+      <h3 style="color: #6366f1; margin-bottom: 1rem;">Google Maps Setup Required</h3>
+      <p style="color: #6b7280; margin-bottom: 2rem; line-height: 1.6;">
+        To enable the interactive map view, you need a Google Maps API key.<br>
+        Don't worry - it's free for most use cases!
+      </p>
+      
+      <div style="background: #f9fafb; padding: 1.5rem; border-radius: 0.5rem; margin-bottom: 1.5rem; text-align: left;">
+        <h4 style="margin-bottom: 1rem; color: #1f2937;">Quick Setup (3 steps):</h4>
+        <ol style="color: #4b5563; line-height: 2;">
+          <li>Get a free API key from <a href="https://console.cloud.google.com/" target="_blank" style="color: #6366f1;">Google Cloud Console</a></li>
+          <li>Enable "Maps JavaScript API" (free $200/month credit)</li>
+          <li>Add your key to <code style="background: #e5e7eb; padding: 0.2rem 0.5rem; border-radius: 0.25rem;">public/events.html</code></li>
+        </ol>
+      </div>
+      
+      <a href="https://console.cloud.google.com/" target="_blank" class="btn btn-primary" style="text-decoration: none;">
+        Get Free API Key →
+      </a>
+      
+      <p style="margin-top: 1rem; font-size: 0.9rem; color: #9ca3af;">
+        See <a href="../GOOGLE_MAPS_SETUP.md" style="color: #6366f1;">GOOGLE_MAPS_SETUP.md</a> for detailed instructions
+      </p>
+    </div>
+  `;
+  
+  // Also update the nearby events list
+  const nearbyList = document.getElementById('nearbyEventsList');
+  if (nearbyList) {
+    nearbyList.innerHTML = `
+      <div style="padding: 2rem; text-align: center; color: #6b7280;">
+        <p>Event locations will appear here once<br>Google Maps is configured</p>
+      </div>
+    `;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadEvents();
+  
+  // Search functionality
+  const searchBtn = document.getElementById('searchBtn');
+  const searchInput = document.getElementById('searchInput');
+  const categoryFilter = document.getElementById('categoryFilter');
+  const dateFilter = document.getElementById('dateFilter');
+  
+  searchBtn.addEventListener('click', filterEvents);
+  searchInput.addEventListener('keyup', (e) => {
+    if (e.key === 'Enter') filterEvents();
+  });
+  categoryFilter.addEventListener('change', filterEvents);
+  dateFilter.addEventListener('change', filterEvents);
+});
+
+async function loadEvents() {
+  const container = document.getElementById('eventsContainer');
+  
+  try {
+    console.log('Loading events...');
+    allEvents = await apiRequest('/events');
+    console.log('Loaded events:', allEvents.length);
+    
+    // Add coordinates to events (geocode locations)
+    await geocodeEventLocations();
+    
+    displayEvents(allEvents);
+    console.log('Events displayed');
+  } catch (error) {
+    console.error('Error loading events:', error);
+    container.innerHTML = `<p class="loading">Error loading events: ${error.message}</p>`;
+  }
+}
+
+// Geocode event locations to get coordinates
+async function geocodeEventLocations() {
+  // For demo purposes, assign random coordinates around a central location
+  // In production, you'd use Google Geocoding API or store real coordinates
+  const baseCoords = [
+    { lat: 37.7749, lng: -122.4194 }, // San Francisco
+    { lat: 37.7849, lng: -122.4094 },
+    { lat: 37.7649, lng: -122.4294 },
+    { lat: 37.7949, lng: -122.3994 },
+    { lat: 37.7549, lng: -122.4394 },
+    { lat: 37.7849, lng: -122.4294 },
+    { lat: 37.7649, lng: -122.4094 },
+    { lat: 37.7949, lng: -122.4194 }
+  ];
+  
+  allEvents.forEach((event, index) => {
+    if (!event.coordinates) {
+      // Assign coordinates (in production, use actual geocoding)
+      event.coordinates = baseCoords[index % baseCoords.length];
+      
+      // Add small random offset for variety
+      event.coordinates = {
+        lat: event.coordinates.lat + (Math.random() - 0.5) * 0.02,
+        lng: event.coordinates.lng + (Math.random() - 0.5) * 0.02
+      };
+    }
+  });
+}
+
+function filterEvents() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const category = document.getElementById('categoryFilter').value;
+  const dateFilter = document.getElementById('dateFilter').value;
+  
+  let filtered = allEvents;
+  
+  if (category) {
+    filtered = filtered.filter(e => e.category === category);
+  }
+  
+  if (search) {
+    filtered = filtered.filter(e => 
+      e.title.toLowerCase().includes(search) || 
+      e.description.toLowerCase().includes(search)
+    );
+  }
+  
+  // Filter by date
+  if (dateFilter !== 'all') {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    filtered = filtered.filter(e => {
+      const eventDate = new Date(e.date);
+      eventDate.setHours(0, 0, 0, 0);
+      
+      if (dateFilter === 'today') {
+        return eventDate.getTime() === today.getTime();
+      } else if (dateFilter === 'this-week') {
+        const weekFromNow = new Date(today);
+        weekFromNow.setDate(weekFromNow.getDate() + 7);
+        return eventDate >= today && eventDate <= weekFromNow;
+      } else if (dateFilter === 'this-month') {
+        return eventDate.getMonth() === today.getMonth() && 
+               eventDate.getFullYear() === today.getFullYear();
+      }
+      return true;
+    });
+  }
+  
+  if (currentView === 'list') {
+    displayEvents(filtered);
+  } else {
+    displayEventsOnMap(filtered);
+  }
+}
+
+function displayEvents(events) {
+  const container = document.getElementById('eventsContainer');
+  console.log('displayEvents called with', events.length, 'events');
+  
+  if (events.length === 0) {
+    container.innerHTML = '<p class="loading">No events found</p>';
+    return;
+  }
+  
+  container.innerHTML = events.map(event => {
+    const isExternal = event.externalUrl;
+    const hasRSVPd = isLoggedIn() && event.attendees.includes(getUserInfo()?.id);
+    
+    return `
+    <div class="event-card" onclick="${isExternal ? '' : 'viewEvent(\'' + event.id + '\')'}">
+      <div class="event-header">
+        ${isExternal ? '<span class="external-event-badge">🌏 Visit Singapore</span>' : ''}
+        <span class="event-category">${event.category}</span>
+        <h3 class="event-title">${event.title}</h3>
+      </div>
+      <div class="event-body">
+        <div class="event-info">
+          <div class="event-info-item">
+            📅 ${formatDate(event.date)}
+          </div>
+          <div class="event-info-item">
+            🕐 ${event.time}
+          </div>
+          <div class="event-info-item">
+            📍 ${event.location}
+          </div>
+        </div>
+        <p class="event-description">${event.description}</p>
+        <div class="event-footer">
+          ${isExternal ? 
+            `<a href="${event.externalUrl}" target="_blank" class="btn btn-primary" 
+                onclick="event.stopPropagation(); bookExternalEvent('${event.id}', '${event.externalUrl}')">
+                Book Now →
+             </a>` :
+            `<span class="attendees-count">
+              👥 ${event.attendees.length} ${event.maxAttendees ? '/ ' + event.maxAttendees : ''} attending
+            </span>`
+          }
+          ${!isExternal && isLoggedIn() && !hasRSVPd ? 
+            `<button class="btn btn-primary" onclick="rsvpEvent(event, '${event.id}')">RSVP</button>` :
+            hasRSVPd ? '<span style="color: var(--success-color); font-weight: 600;">✓ Attending</span>' :
+            ''
+          }
+        </div>
+      </div>
+    </div>
+  `;
+  }).join('');
+}
+
+// Display events on Google Map
+function displayEventsOnMap(events) {
+  if (!map) {
+    console.log('Map not initialized - showing setup instructions');
+    showMapSetupInstructions();
+    return;
+  }
+
+  // Clear existing markers
+  markers.forEach(marker => marker.setMap(null));
+  markers = [];
+
+  if (events.length === 0) {
+    document.getElementById('nearbyEventsList').innerHTML = '<p class="loading">No events to display on map</p>';
+    return;
+  }
+
+  const bounds = new google.maps.LatLngBounds();
+
+  // Add user location to bounds if available
+  if (userLocation) {
+    bounds.extend(new google.maps.LatLng(userLocation.lat, userLocation.lng));
+  }
+
+  // Calculate distances if user location is available
+  if (userLocation) {
+    events.forEach(event => {
+      if (event.coordinates) {
+        const distance = calculateDistance(
+          userLocation.lat, userLocation.lng,
+          event.coordinates.lat, event.coordinates.lng
+        );
+        event.distance = distance;
+      }
+    });
+    
+    // Sort by distance
+    events.sort((a, b) => (a.distance || Infinity) - (b.distance || Infinity));
+  }
+
+  // Add markers for events
+  events.forEach((event, index) => {
+    if (!event.coordinates) return;
+
+    const marker = new google.maps.Marker({
+      position: event.coordinates,
+      map: map,
+      title: event.title,
+      label: {
+        text: `${index + 1}`,
+        color: 'white',
+        fontSize: '12px',
+        fontWeight: 'bold'
+      },
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 15,
+        fillColor: getCategoryColor(event.category),
+        fillOpacity: 0.9,
+        strokeColor: 'white',
+        strokeWeight: 2,
+      }
+    });
+
+    bounds.extend(marker.getPosition());
+
+    // Add click listener to show info window
+    marker.addListener('click', () => {
+      const contentString = `
+        <div class="map-info-window">
+          <div class="map-info-title">${event.title}</div>
+          <div class="map-info-details">
+            <div><strong>📅</strong> ${formatDate(event.date)} at ${event.time}</div>
+            <div><strong>📍</strong> ${event.location}</div>
+            <div><strong>📂</strong> ${event.category}</div>
+            <div><strong>👥</strong> ${event.attendees.length} attending</div>
+            ${event.distance ? `<div><strong>🗺️</strong> ${event.distance.toFixed(1)} km away</div>` : ''}
+            <div style="margin-top: 10px;">
+              ${isLoggedIn() ? 
+                `<button class="btn btn-primary" onclick="rsvpEvent(event, '${event.id}')" style="font-size: 0.85rem; padding: 0.4rem 1rem;">RSVP</button>` :
+                `<a href="login.html" class="btn btn-primary" style="font-size: 0.85rem; padding: 0.4rem 1rem;">Login to RSVP</a>`
+              }
+            </div>
+          </div>
+        </div>
+      `;
+      
+      infoWindow.setContent(contentString);
+      infoWindow.open(map, marker);
+    });
+
+    markers.push(marker);
+  });
+
+  // Fit map to show all markers
+  if (events.length > 0) {
+    map.fitBounds(bounds);
+    
+    // Ensure we don't zoom in too much
+    google.maps.event.addListenerOnce(map, 'bounds_changed', () => {
+      if (map.getZoom() > 15) {
+        map.setZoom(15);
+      }
+    });
+  }
+
+  // Display nearby events list
+  displayNearbyEventsList(events);
+}
+
+// Display list of nearby events
+function displayNearbyEventsList(events) {
+  const container = document.getElementById('nearbyEventsList');
+  
+  if (events.length === 0) {
+    container.innerHTML = '<p class="loading">No events to display</p>';
+    return;
+  }
+
+  container.innerHTML = events.map((event, index) => `
+    <div class="nearby-event-item" onclick="focusOnMarker(${index})">
+      <div style="display: flex; justify-content: space-between; align-items: start;">
+        <span style="font-weight: bold; color: var(--primary-color); font-size: 1.2rem;">${index + 1}</span>
+        ${event.distance ? `<span class="nearby-event-distance">📍 ${event.distance.toFixed(1)} km away</span>` : ''}
+      </div>
+      <div class="nearby-event-title">${event.title}</div>
+      <div class="nearby-event-details">
+        📅 ${formatDate(event.date)} at ${event.time}<br>
+        📍 ${event.location}<br>
+        📂 ${event.category}
+      </div>
+    </div>
+  `).join('');
+}
+
+// Focus on a specific marker
+function focusOnMarker(index) {
+  if (markers[index]) {
+    map.setZoom(14);
+    map.panTo(markers[index].getPosition());
+    google.maps.event.trigger(markers[index], 'click');
+  }
+}
+
+// Switch between list and map views
+window.switchView = function(view) {
+  currentView = view;
+  
+  const listView = document.getElementById('listView');
+  const mapView = document.getElementById('mapView');
+  const listViewBtn = document.getElementById('listViewBtn');
+  const mapViewBtn = document.getElementById('mapViewBtn');
+  
+  if (view === 'list') {
+    listView.style.display = 'block';
+    mapView.style.display = 'none';
+    listViewBtn.classList.remove('btn-outline');
+    listViewBtn.classList.add('btn-primary');
+    mapViewBtn.classList.remove('btn-primary');
+    mapViewBtn.classList.add('btn-outline');
+    
+    filterEvents();
+  } else {
+    listView.style.display = 'none';
+    mapView.style.display = 'block';
+    listViewBtn.classList.remove('btn-primary');
+    listViewBtn.classList.add('btn-outline');
+    mapViewBtn.classList.remove('btn-outline');
+    mapViewBtn.classList.add('btn-primary');
+    // Check if Google Maps is loaded
+    if (typeof google === 'undefined' || !google.maps) {
+      showMapSetupInstructions();
+    } else if (map) {
+      // Trigger resize to ensure map displays correctly
+      google.maps.event.trigger(map, 'resize');
+      displayEventsOnMap(allEvents);
+    } else {
+      initMap();
+      if (allEvents.length > 0) {
+        displayEventsOnMap(allEvents);
+      }
+    }
+  }
+};
+
+// Find nearby events (filter for today and sort by distance)
+window.findNearbyEvents = function() {
+  if (!userLocation) {
+    alert('Please enable location services to find nearby events');
+    return;
+  }
+
+  // Switch to map view
+  switchView('map');
+
+  // Filter for today's events or upcoming events
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const nearbyEvents = allEvents.filter(e => {
+    const eventDate = new Date(e.date);
+    eventDate.setHours(0, 0, 0, 0);
+    return eventDate >= today; // Events today or in the future
+  });
+
+  if (nearbyEvents.length === 0) {
+    alert('No upcoming events found');
+    return;
+  }
+
+  displayEventsOnMap(nearbyEvents);
+  
+  // Zoom to show a reasonable area around user
+  map.setCenter(userLocation);
+  map.setZoom(13);
+};
+
+// Calculate distance between two points using Haversine formula
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Radius of the Earth in kilometers
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = R * c;
+  return distance;
+}
+
+// Get color for category
+function getCategoryColor(category) {
+  const colors = {
+    'Technology': '#6366f1',
+    'Sports': '#10b981',
+    'Arts': '#f59e0b',
+    'Business': '#3b82f6',
+    'Food': '#ef4444',
+    'Health': '#8b5cf6',
+    'Education': '#ec4899',
+    'Social': '#14b8a6'
+  };
+  return colors[category] || '#6366f1';
+}
+
+function formatDate(dateStr) {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-US', { 
+    weekday: 'short', 
+    year: 'numeric', 
+    month: 'short', 
+    day: 'numeric' 
+  });
+}
+
+function viewEvent(eventId) {
+  // For now, just log. You could create a detail page later
+  console.log('View event:', eventId);
+}
+
+// Book external event (Visit Singapore)
+async function bookExternalEvent(eventId, externalUrl) {
+  if (!isLoggedIn()) {
+    alert('Please login to track your booked events');
+    window.location.href = 'login.html';
+    return false;
+  }
+  
+  try {
+    // RSVP to track in user's profile
+    await apiRequest(`/events/${eventId}/rsvp`, {
+      method: 'POST'
+    });
+    
+    // Open external booking site
+    window.open(externalUrl, '_blank');
+    
+    // Show confirmation
+    setTimeout(() => {
+      alert('Event added to your profile! Visit "My Profile" to see all your events.');
+    }, 500);
+    
+    await loadEvents();
+  } catch (error) {
+    // Still open the external site even if RSVP fails
+    window.open(externalUrl, '_blank');
+    console.error('RSVP error:', error);
+  }
+  
+  return false;
+}
+
+// Make it globally accessible
+window.bookExternalEvent = bookExternalEvent;
