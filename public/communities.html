@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Communities - Digital AI Buddy</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <div class="nav-brand">
+        <img src="logo.png" alt="Digital AI Buddy Logo" class="logo">
+        <h1>Digital AI Buddy</h1>
+      </div>
+      <ul class="nav-menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="communities.html" class="active">Communities</a></li>
+        <li id="profileLink" style="display: none;"><a href="profile.html">My Profile</a></li>
+        <li id="authLinks">
+          <a href="login.html">Login</a>
+          <a href="register.html">Sign Up</a>
+        </li>
+        <li id="userLinks" style="display: none;">
+          <a href="create-community.html">Create Community</a>
+          <a href="#" id="logoutBtn">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="page-header">
+    <div class="container">
+      <h2>Find Your Community</h2>
+      <p>Join groups that share your interests</p>
+    </div>
+  </section>
+
+  <!-- Community Options -->
+  <section class="community-options-section">
+    <div class="container">
+      <div class="community-options">
+        <div class="sidebar-item" onclick="window.location.href='peer-support.html'">
+          <div class="sidebar-text">
+            <h4>Peer Support Matching</h4>
+            <p>Connect with others who understand your journey</p>
+          </div>
+        </div>
+        <div class="sidebar-item" onclick="window.location.href='nearby-caregiver.html'">
+          <div class="sidebar-text">
+            <h4>Nearby Caregiver</h4>
+            <p>Find caregivers and support services near you</p>
+          </div>
+        </div>
+        <div class="sidebar-item" onclick="window.location.href='posts.html'">
+          <div class="sidebar-text">
+            <h4>Posts</h4>
+            <p>Share your thoughts and experiences</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="container">
+      <div id="communitiesContainer" class="communities-grid">
+        <div class="loading">Loading communities...</div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2026 Digital AI Buddy. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/auth.js"></script>
+  <script src="js/communities.js"></script>
+</body>
+</html>

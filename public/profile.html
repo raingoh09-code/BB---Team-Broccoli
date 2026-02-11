@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile - Digital AI Buddy</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <div class="nav-brand">
+        <img src="logo.png" alt="Digital AI Buddy Logo" class="logo">
+        <h1>Digital AI Buddy</h1>
+      </div>
+      <ul class="nav-menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="communities.html">Communities</a></li>
+        <li><a href="profile.html" class="active">My Profile</a></li>
+        <li id="userLinks">
+          <a href="create-event.html">Create Event</a>
+          <a href="#" id="logoutBtn">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="page-header">
+    <div class="container">
+      <h2 id="profileName">My Profile</h2>
+      <p id="profileEmail"></p>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="container">
+      <div class="profile-layout">
+        <!-- Left Side: Profile Information -->
+        <div class="profile-sidebar">
+          <div class="profile-info-card">
+            <div class="profile-info-header">
+              <h3>Profile Information</h3>
+              <button class="btn btn-outline btn-sm" onclick="toggleEditProfile()">Edit</button>
+            </div>
+            
+            <div id="profileInfoDisplay" class="profile-info-display">
+              <div class="profile-info-item">
+                <span class="profile-label">Name:</span>
+                <span id="displayName" class="profile-value">-</span>
+              </div>
+              <div class="profile-info-item">
+                <span class="profile-label">Email:</span>
+                <span id="displayEmail" class="profile-value">-</span>
+              </div>
+              <div class="profile-info-item">
+                <span class="profile-label">Phone:</span>
+                <span id="displayPhone" class="profile-value">Not set</span>
+              </div>
+              <div class="profile-info-item">
+                <span class="profile-label">Area:</span>
+                <span id="displayArea" class="profile-value">Not set</span>
+              </div>
+            </div>
+
+            <div id="profileInfoEdit" class="profile-info-edit" style="display: none;">
+              <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="editName" class="form-input">
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="editEmail" class="form-input" readonly>
+              </div>
+              <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" id="editPhone" class="form-input" placeholder="+65 1234 5678">
+              </div>
+              <div class="form-group">
+                <label>Area / Location</label>
+                <input type="text" id="editArea" class="form-input" placeholder="e.g., Orchard, Marina Bay, Tampines">
+              </div>
+              <div class="profile-edit-actions">
+                <button class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
+                <button class="btn btn-outline" onclick="cancelEditProfile()">Cancel</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Stats -->
+          <div class="profile-stats-card">
+            <h3>📊 Quick Stats</h3>
+            <div class="stat-item">
+              <span class="stat-number" id="statsEventsAttending">0</span>
+              <span class="stat-label">Events Attending</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number" id="statsEventsCreated">0</span>
+              <span class="stat-label">Events Created</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number" id="statsCommunities">0</span>
+              <span class="stat-label">Communities</span>
+            </div>
+          </div>
+
+          <!-- Mood Trend Graph -->
+          <div class="mood-trend-card">
+            <div class="mood-trend-header">
+              <h3>Mood Over Time</h3>
+              <div class="mood-view-toggle">
+                <button class="mood-view-btn active" data-view="monthly" onclick="switchMoodView(this, 'monthly')">Monthly</button>
+                <button class="mood-view-btn" data-view="daily" onclick="switchMoodView(this, 'daily')">Daily</button>
+              </div>
+            </div>
+            <div class="mood-navigation">
+              <button class="mood-nav-btn" id="moodPrevBtn" onclick="navigateMoodPeriod(-1)">‹</button>
+              <div class="mood-period-label" id="moodPeriodLabel">Last 6 Months</div>
+              <button class="mood-nav-btn" id="moodNextBtn" onclick="navigateMoodPeriod(1)">›</button>
+            </div>
+            <div class="mood-trend-graph">
+              <div class="mood-y-axis">
+                <div class="mood-y-label" data-mood="great">😊</div>
+                <div class="mood-y-label" data-mood="good">😀</div>
+                <div class="mood-y-label" data-mood="okay">😐</div>
+                <div class="mood-y-label" data-mood="bad">🙁</div>
+                <div class="mood-y-label" data-mood="terrible">😢</div>
+              </div>
+              <div class="mood-graph-area">
+                <svg id="moodTrendSvg" class="mood-svg" viewBox="0 0 800 300" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="moodGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" style="stop-color:#A8BAAA;stop-opacity:0.3" />
+                      <stop offset="100%" style="stop-color:#A8BAAA;stop-opacity:0.05" />
+                    </linearGradient>
+                  </defs>
+                  <!-- Grid lines -->
+                  <line x1="0" y1="60" x2="800" y2="60" stroke="#E3DDD7" stroke-width="1"/>
+                  <line x1="0" y1="120" x2="800" y2="120" stroke="#E3DDD7" stroke-width="1"/>
+                  <line x1="0" y1="180" x2="800" y2="180" stroke="#E3DDD7" stroke-width="1"/>
+                  <line x1="0" y1="240" x2="800" y2="240" stroke="#E3DDD7" stroke-width="1"/>
+                  <!-- Path will be added dynamically -->
+                  <path id="moodTrendPath" fill="url(#moodGradient)" stroke="#A8BAAA" stroke-width="3" />
+                  <path id="moodTrendLine" fill="none" stroke="#A8BAAA" stroke-width="3" />
+                </svg>
+                <div class="mood-x-axis" id="moodXAxis">
+                  <!-- Labels will be added dynamically -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Events & Activities -->
+        <div class="profile-main">
+          <div class="profile-container">
+            <!-- Tabs -->
+            <div class="profile-tabs">
+              <button class="tab-btn active" onclick="switchTab(this, 'my-events')">My Events</button>
+              <button class="tab-btn" onclick="switchTab(this, 'created-events')">Events I Created</button>
+              <button class="tab-btn" onclick="switchTab(this, 'my-communities')">My Communities</button>
+            </div>
+
+            <!-- My Events Tab -->
+            <div id="my-events-tab" class="tab-content active">
+              <h3>Events I'm Attending</h3>
+              <div id="myEventsContainer" class="events-grid">
+                <div class="loading">Loading your events...</div>
+              </div>
+            </div>
+
+            <!-- Created Events Tab -->
+            <div id="created-events-tab" class="tab-content">
+              <h3>Events I Created</h3>
+              <div id="createdEventsContainer" class="events-grid">
+                <div class="loading">Loading...</div>
+              </div>
+            </div>
+
+            <!-- My Communities Tab -->
+            <div id="my-communities-tab" class="tab-content">
+              <h3>Communities I Joined</h3>
+              <div id="myCommunitiesContainer" class="communities-grid">
+                <div class="loading">Loading...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2026 Digital AI Buddy. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/auth.js"></script>
+  <script src="js/profile.js"></script>
+</body>
+</html>

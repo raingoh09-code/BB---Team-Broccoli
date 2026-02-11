@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Events</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .event { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
+  </style>
+</head>
+<body>
+  <h1>Event Test Page</h1>
+  <button onclick="loadEvents()">Load Events</button>
+  <div id="status"></div>
+  <div id="events"></div>
+
+  <script>
+    async function loadEvents() {
+      const statusDiv = document.getElementById('status');
+      const eventsDiv = document.getElementById('events');
+      
+      statusDiv.innerHTML = 'Loading...';
+      
+      try {
+        console.log('Fetching from: /api/events');
+        const response = await fetch('/api/events');
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const events = await response.json();
+        console.log('Loaded events:', events.length);
+        
+        statusDiv.innerHTML = `✅ Loaded ${events.length} events`;
+        
+        eventsDiv.innerHTML = events.map(e => `
+          <div class="event">
+            <h3>${e.title}</h3>
+            <p>${e.description}</p>
+            <p><strong>Date:</strong> ${e.date} at ${e.time}</p>
+            <p><strong>Location:</strong> ${e.location}</p>
+            <p><strong>Category:</strong> ${e.category}</p>
+          </div>
+        `).join('');
+        
+      } catch (error) {
+        console.error('Error:', error);
+        statusDiv.innerHTML = `❌ Error: ${error.message}`;
+      }
+    }
+    
+    // Auto-load on page load
+    window.addEventListener('DOMContentLoaded', loadEvents);
+  </script>
+</body>
+</html>
